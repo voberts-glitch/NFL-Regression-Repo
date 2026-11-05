@@ -1,0 +1,133 @@
+---
+title: "Predicting NFL Winning Percentage"
+subtitle: "STAT 330 Portfolio Project Proposal"
+author: "Tanner Memmott, Viken Roberts, Clark Fiala"
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: true
+    code-summary: "Show code"
+    embed-resources: true
+execute:
+  warning: false
+  message: false
+---
+
+::: {.callout-tip}
+This proposal is separate from the final case study and does not count toward its word range. Keep the required headings, but add, remove, or move code chunks and output as needed. Delete this note and all bold prompts before submitting.
+:::
+
+**Group members:** Replace with all names. Every member submits the same complete proposal QMD with the same rendered HTML or PDF. The TA will grade only one submission selected from the group.
+
+## Question and audience
+
+**State one focused regression question. Identify the intended audience, explain why the answer matters, and name the response and important candidate predictors.**
+
+> How well does a set of predictors predict winning percentage in the NFL. Audience includes NFL teams, coaches, and personnel. The response is winning percentage and the predictors were are starting with are, completion percentage, average air yards, total defensive and offensive epa, offensive success rate and total defensive. This matters because these stats can help a team know what metrics give them competetitive advantages. 
+
+## Data
+
+**Provide a working source link or citation. Describe the observational unit, dimensions, response, candidate predictors, collection process if known, and evidence that the data can answer your question. Address permission to share or retrieve the data and any privacy, representation, measurement, or ethical concern.**
+
+```{r}
+# Load packages and read the data with a relative path or reproducible step.
+# Show only a compact check of dimensions and variables.
+library(tidyverse)
+
+nfl_data <- read_csv("nfl-team-statistics.csv") |>
+  filter(season >= 2017) |>
+  mutate(win_percentage = (wins + 0.5 * ties) / (wins + losses + ties),
+  giveaways = offense_n_interceptions + offense_n_fumbles_lost_pass + offense_n_fumbles_lost_run,
+  takeaways = defense_n_interceptions + defense_n_fumbles_lost_pass + defense_n_fumbles_lost_run,
+  turnover_margin = takeaways - giveaways,
+  defense_total_plays = defense_n_plays_pass + defense_n_plays_run,
+  offense_ave_air_yards = as.numeric(offense_ave_air_yards)
+  )  |>
+  select(
+    season,
+    team,
+    win_percentage,
+    turnover_margin,
+    offense_completion_percentage,
+    offense_ave_air_yards,
+    offense_total_epa_pass,
+    offense_total_epa_run,
+    offense_success_rate_pass,
+    offense_success_rate_run,
+    defense_total_epa_pass,
+    defense_total_epa_run,
+    defense_total_plays
+  )
+```
+
+## One useful first look
+
+```{r}
+# Create one figure that directly informs your research question.
+# Include a useful title, labels, units, and accessible colors.
+nfl_data |>
+  pivot_longer(
+    cols = -c(season, team, win_percentage),
+    names_to = "predictor",
+    values_to = "value"
+  ) |>
+  ggplot(aes(x = value, y = win_percentage)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(method = "lm", se = FALSE, color = "firebrick") +
+  facet_wrap(~ predictor, scales = "free_x") +
+  labs(
+    title = "Win Percentage vs. Team Statistics",
+    x = NULL,
+    y = "Win Percentage"
+  ) +
+  theme_minimal()
+```
+
+**In two to four sentences, explain the most important pattern. Do not make a causal claim unless the study design supports one.**
+
+There are some steep linear relationships to winning percentage that could be super helpful to us. We also see that there is a less steep relationship for defensive run epa, total defensive plays, and offensive average air yards.
+
+## Baseline model
+
+**Name and justify one simple starting model.**
+
+```{r}
+# Fit the baseline and display only the output needed below.
+nfl_model <- lm(
+  win_percentage ~ turnover_margin +
+    offense_completion_percentage +
+    offense_ave_air_yards +
+    offense_total_epa_pass +
+    offense_total_epa_run +
+    offense_success_rate_pass +
+    offense_success_rate_run +
+    defense_total_epa_pass +
+    defense_total_epa_run +
+    defense_total_plays,
+  data = nfl_data
+)
+
+summary(nfl_model)
+```
+
+**Interpret one important coefficient, contrast, or prediction in context. Include direction, magnitude, units or scale, and uncertainty. Then identify one specific limitation, unexplained pattern, or opportunity for improvement.**
+
+Our lowest p-value is defensive total epa. This is interesting because it shows there is strong evidence that this predictor has estimate that is not 0. The estimate is negative which shows higher defensive epa has a strong relationship with lower win percentage. One limitation is our estimates are all very small numbers, we could maybe find a way to have our estimates have better interpretations. We could multiply win percentage by 100. 
+
+## Where the analysis could go
+
+**Choose two different course-method families from the project instructions. For each, state what you might do and how it could help answer the question. These methods will form the core of the project and may change after feedback.**
+
+1. **Possible direction:** Selection and Shrinkage
+> We would see which predictors better predict percentage to get more accurate model. 
+2. **Possible direction:** Diagnostics and Robustness
+> We would see how well our model passes assumptions and make adjustments. We would use multicollinearity to address predictors. 
+
+## AI disclosure and sources
+
+**Disclose any AI used for debugging, proofreading, or other help with the proposal. This does not satisfy the required AI extension. Write “No AI used” if applicable. Cite the dataset and any other sources that materially informed the proposal.**
+
+> We used ai to help us create a graphic and wrangle our data. 
+
+> Website and data used: https://data.scorenetwork.org/football/nfl-team-statistics.html
