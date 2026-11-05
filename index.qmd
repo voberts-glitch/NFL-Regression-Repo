@@ -1,9 +1,9 @@
 ---
-title: "Replace with a specific, informative title"
-subtitle: "Replace with one sentence that tells readers why the question matters"
-author: "Replace with all group members' names"
-date: last-modified
-description: "Replace with a brief description for link previews."
+title: "What Team Statistics Predict NFL Win Percentage?"
+subtitle: "Identifying which measures of team performance matter most for winning."
+author: "Tanner Memmott, Clark Fiala, Viken Roberts"
+date: November, 5, 2026
+description: "A regression analysis of NFL team statistics and win percentage."
 ---
 
 **Narrative word count:** Replace with a number from 750 to 1,000.
