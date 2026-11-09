@@ -16,17 +16,24 @@ This page is a work log, not a second report. Short bullets are welcome. It is s
 
 Paste the exact prompts that shaped the extension. Include the customized extension-selection prompt from the checkpoint and any important implementation follow-ups. Delete unused prompt blocks.
 
-> Replace with an exact prompt.
+> I am creating a regression case study in R and Quarto. My question is How well does a set of predictors predict winning percentage in the NFL. The response is winning percentage, the main predictors are completion percentage, average air yards, total defensive and offensive epa, offensive success rate and total defensive, and my course-based core model is linear regression. My main result so far is there are a few predictors that affect the response more, such as total defensive epa. I found this limitation or opportunity: We have a lot of predictors and we can afford to lose or add others in the data set to find what predictors affect the win percentage the most. Suggest three feasible extensions that keep the core analysis connected to regression methods taught in my class. One option may be a model not taught in class used as a comparator. For each, explain how it strengthens the same research question, how its result would enter the final case study, the implementation steps, and two ways I could verify it. Do not choose for me..
 
 > Replace with another exact prompt, if needed.
 
 ## My decisions
 
 - **Accepted:** What useful advice did you use?
+We got suggested that we build a model based on the most effiecient predictors by removing predoctors that don't affect win percentage. Then we will verify it by using ridge or lasso. 
+
+We can also run a VIF test to see what predictors contribute most to multicollinearity. We will verify it by testing for VIF scores.
 - **Changed:** What did you adapt to fit your data or goals?
+
+
 - **Rejected or corrected:** What advice was unsuitable, unnecessary, or wrong?
 
 **Connection to the final case study:** Identify where the extension's method and result appear on the final page and how they strengthen the course-based analysis.
+
+These methods strengthen the corse based analysis by getting rid of noise, and by making each predictor more effeicent, thereby giving us a more accurate and consistent model. 
 
 ## Independent verification
 
